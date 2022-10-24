@@ -8,7 +8,7 @@
 [![Twitter Follow @itineris_ltd](https://img.shields.io/twitter/follow/itineris_ltd?style=flat-square&color=1da1f2)](https://twitter.com/itineris_ltd)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<!-- DON'T EDIT THIS SECTION, INxSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Minimum Requirements](#minimum-requirements)
 - [Installation](#installation)
