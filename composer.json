@@ -1,0 +1,51 @@
+{
+  "name": "itinerisltd/page-as-post-type-archive",
+  "type": "wordpress-plugin",
+  "description": "Allows you to set a page as the archive of a post type.",
+  "keywords": [
+    "wordpress",
+    "wp",
+    "archive",
+    "custom archive page"
+  ],
+  "homepage": "https://github.com/itinerisltd/page-as-post-type-archive/",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Itineris Limited",
+      "email": "dev@itineris.co.uk",
+      "homepage": "https://itineris.co.uk/",
+      "role": "Company"
+    },
+    {
+      "name": "Dan Lapteacru",
+      "email": "danlapteacru@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    },
+    "acorn": {
+      "providers": "Itineris\\PageAsPostTypeArchive\\ServiceProvider"
+    }
+  },
+  "prefer-stable": true,
+  "support": {
+    "email": "dev@itineris.co.uk",
+    "issues": "https://github.com/ItinerisLtd/page-as-post-type-archive/issues",
+    "source": "https://github.com/ItinerisLtd/page-as-post-type-archive"
+  },
+  "autoload": {
+    "psr-4": {
+      "Itineris\\PageAsPostTypeArchive\\": "src/"
+    }
+  }
+}

@@ -1,0 +1,336 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Itineris\PageAsPostTypeArchive;
+
+use WP_Customize_Manager;
+use WP_Post;
+use WP_Post_Type;
+
+class Admin {
+    /**
+     * @var self|null
+     */
+    protected static ?self $instance = null;
+
+    /**
+     * @var array|null
+     */
+    public ?array $postTypes = null;
+
+    /**
+     * @var array|null
+     */
+    public ?array $archivePages = null;
+
+    public function __construct()
+    {
+        add_filter('display_post_states', [$this, 'addPageStates'], 10, 2);
+        add_filter('register_post_type_args', [$this, 'registerPostTypeArgs'], 10, 2);
+        add_action('template_redirect', [$this, 'customTemplate']);
+        add_action('admin_init', [$this, 'addCustomPostTypePageSelectorOptions']);
+        add_action('customize_register', [$this, 'customizerRegister']);
+        add_action('deleted_post', [$this, 'deletedPost']);
+        add_action('transition_post_status', [$this, 'transitionPostStatus'], 10, 3);
+    }
+
+    /**
+     * @return Admin|null
+     */
+    public static function instance(): ?Admin
+    {
+        if (null === self::$instance) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * Get all available post types.
+     *
+     * @return array
+     */
+    public function getPostTypes(): array {
+        if (null === $this->postTypes) {
+            $post_type_to_ignore = apply_filters('itineris/page-as-post-type-archive/post_type_to_ignore', []);
+
+            $this->postTypes = array_filter(
+                get_post_types([
+                    'public' => true,
+                    '_builtin' => false,
+                ], 'objects'),
+                fn (WP_Post_Type $postType): bool =>
+                    $postType->has_archive && ! $postType->_builtin
+                    && ! in_array($postType->name, $post_type_to_ignore, true)
+            );
+        }
+
+        return $this->postTypes ?? [];
+    }
+
+    public function addCustomPostTypePageSelectorOptions(): void
+    {
+        $post_types = $this->getPostTypes();
+        if (empty($post_types)) {
+            return;
+        }
+
+        foreach ($post_types as $post_type) {
+            $this->addSettingsField($post_type);
+        }
+    }
+
+    protected function addSettingsField(WP_Post_Type $post_type): void
+    {
+        $setting_id = "page_for_{$post_type->name}";
+
+        register_setting(
+            'reading',
+            $setting_id,
+            [
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'default' => NULL,
+            ]
+        );
+
+        add_settings_field(
+            $setting_id, // ID
+            "{$post_type->label} Archive Page",
+            [$this, 'pageSelector'],
+            'reading',
+            'default',
+            [
+                'setting_id' => $setting_id,
+                'post_type' => $post_type->name,
+            ]
+        );
+    }
+
+    public function pageSelector(array $args)
+    {
+        extract($args);
+
+        wp_dropdown_pages(
+            array(
+                'name' => $setting_id,
+                'echo' => true,
+                'show_option_none' => __('&mdash; Select &mdash;'),
+                'option_none_value' => '0',
+                'selected' => (int) get_option($setting_id, 0),
+            )
+        );
+    }
+
+    public function addPageStates(array $post_states, WP_Post $post): array
+    {
+        if ('page' !== $post->post_type) {
+            return $post_states;
+        }
+
+        $archive_page_data = $this->getArchivePageData($post->ID);
+        if (null === $archive_page_data) {
+            return $post_states;
+        }
+
+        $post_states[] = "{$archive_page_data->label} Archive Page";
+
+        return $post_states;
+    }
+
+    protected function getArchivePageData(int $postId): ?object
+    {
+        if (null === $this->archivePages) {
+            $saved_settings = array_map(fn (WP_Post_Type $postType): object => (object) [
+                'name' => $postType->name,
+                'label' => $postType->label,
+                'option_name' => "page_for_{$postType->name}",
+                'value' => (int) get_option("page_for_{$postType->name}", 0),
+            ], $this->getPostTypes());
+
+            $this->archivePages = $saved_settings;
+        }
+
+        if (empty($this->archivePages)) {
+            return null;
+        }
+
+        foreach ($this->archivePages as $setting) {
+            if ($postId === $setting->value) {
+                return $setting;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Delete the setting for the corresponding post type if the page status
+     * is transitioned to anything other than published
+     *
+     * @param string $new_status
+     * @param string $old_status
+     * @param WP_Post $post
+     */
+    public function transitionPostStatus(string $new_status, string $old_status, WP_Post $post): void
+    {
+        if ('publish' === $new_status) {
+            return;
+        }
+
+        $archive_page_data = $this->getArchivePageData($post->ID);
+        if (null === $archive_page_data) {
+            return;
+        }
+
+        delete_option($archive_page_data->option_name);
+        flush_rewrite_rules();
+    }
+
+    /**
+     * Delete relevant option if a page for the archive is deleted
+     *
+     * @param int $post_id
+     */
+    public function deletedPost(int $post_id): void
+    {
+        $archive_page_data = $this->getArchivePageData($post_id);
+        if (null === $archive_page_data) {
+            return;
+        }
+
+        delete_option($archive_page_data->option_name);
+        flush_rewrite_rules();
+    }
+
+	/**
+     * Register Customizer settings.
+     *
+	 * @param WP_Customize_Manager $wp_customize
+	 *
+	 * @return void
+	 */
+    public function customizerRegister(WP_Customize_Manager $wp_customize): void {
+        $cpts = $this->getPostTypes();
+        if (empty($cpts)) {
+            return;
+        }
+
+        $wp_customize
+            ->add_section(ITINERIS_PAPTA_SLUG . '-archive', [
+                'title' => __('Pages for post type archives', 'page-as-post-type-archive'),
+            ]);
+
+        foreach ($cpts as $cpt ) {
+            if (! $cpt->has_archive) {
+                continue;
+            }
+
+            $id = "page_for_{$cpt->name}";
+
+            $wp_customize
+                ->add_setting($id, [
+	                'type' => 'option',
+	                'capability' => 'manage_options',
+	                'default' => 0,
+	                'sanitize_callback' => 'sanitize_text_field',
+                ]);
+
+            $wp_customize
+                ->add_control($id, [
+                    'type' => 'dropdown-pages',
+                    'section' => ITINERIS_PAPTA_SLUG . '-archive',
+                    'label' => $cpt->labels->name,
+                ]);
+        }
+    }
+
+    public function registerPostTypeArgs(array $args, string $post_type): array
+    {
+        $post_type_page = (int) get_option("page_for_{$post_type}", 0);
+        if (0 === $post_type_page) {
+            return $args;
+        }
+
+        // make sure we don't create rules for an unpublished page preview URL.
+        if ('publish' !== get_post_status($post_type_page)) {
+            return $args;
+        }
+
+        // get the custom archive page slug.
+        $slug = get_permalink($post_type_page);
+        $slug = str_replace(home_url(), '', $slug);
+        $slug = trim($slug, '/');
+
+        if (isset($args['rewrite']['slug'])) {
+           $args['rewrite']['slug'] = $slug;
+        }
+
+        $args['has_archive'] = $slug;
+
+        return $args;
+    }
+
+    /**
+     * Use custom template.
+     *
+     * TODO: use template_include instead of this.
+     */
+    public function customTemplate(): void
+    {
+        $postTypes = array_keys($this->getPostTypes());
+        if (empty($postTypes)) {
+            return;
+        }
+
+        if (! is_post_type_archive($postTypes)) {
+            return;
+        }
+
+        $postType = get_queried_object()->name;
+
+        $post_type_page = (int) get_option("page_for_{$postType}", 0);
+        if (0 === $post_type_page) {
+            return;
+        }
+
+        $content = get_the_content(null, false, $post_type_page);
+        echo $this->locateTemplate($postType, [
+            'content' => $content,
+        ]);
+        exit;
+    }
+
+    /**
+     * Locate template.
+     *
+     * Locate the called template.
+     *
+     * Search Order:
+     * 1. /themes/theme/your-theme-name/$template_name
+     * 2. /themes/theme/$template_name
+     * 3. /plugins/your-plugin-name/views/$template_name.
+     *
+     * @param string $template Template to load.
+     * @return string Path to the template file.
+     */
+    protected function locateTemplate(string $template, array $args = []): string {
+        $template_path = ITINERIS_PAPTA_SLUG;
+
+        if (view()->exists("{$template_path}.{$template}")) {
+            return view("{$template_path}.{$template}", $args)->toHtml();
+        }
+
+        if (view()->exists("ItinerisPageAsPostTypeArchive::{$template}")) {
+            return view("ItinerisPageAsPostTypeArchive::{$template}", $args)->toHtml();
+        }
+
+        if (view()->exists("{$template_path}.default")) {
+            return view("{$template_path}.default", $args)->toHtml();
+        }
+
+        return view("ItinerisPageAsPostTypeArchive::default", $args)->toHtml();
+    }
+};
