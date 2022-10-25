@@ -71,7 +71,7 @@ class CustomPostType extends AbstractType {
             $setting_id,
             [
                 'type' => 'string',
-                'sanitize_callback' => 'sanitize_text_field',
+                'sanitize_callback' => [$this, 'saveSettingsCallback'],
                 'default' => NULL,
             ]
         );
@@ -200,7 +200,7 @@ class CustomPostType extends AbstractType {
                     'type' => 'option',
                     'capability' => 'manage_options',
                     'default' => 0,
-                    'sanitize_callback' => 'sanitize_text_field',
+                    'sanitize_callback' => [$this, 'saveSettingsCallback'],
                 ]);
 
             $wp_customize
