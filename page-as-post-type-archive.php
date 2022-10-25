@@ -23,11 +23,10 @@ define('ITINERIS_PAPTA_SLUG', 'page-as-post-type-archive');
 define('ITINERIS_PAPTA_DIR', untrailingslashit(plugin_dir_path(__FILE__)));
 
 $composer = __DIR__ . '/vendor/autoload.php';
-if (! file_exists($composer)) {
-    wp_die(__('Error locating autoloader. Please run <code>composer install</code>.', 'page-as-post-type-archive'));
+if (file_exists($composer)) {
+	require_once $composer;
 }
 
-require_once $composer;
 require_once ITINERIS_PAPTA_DIR . '/src/helpers.php';
 
 CustomPages::instance();
