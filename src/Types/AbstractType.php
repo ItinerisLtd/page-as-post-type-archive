@@ -64,4 +64,14 @@ abstract class AbstractType {
 
         return $this->customPageId ?? 0;
     }
+
+	/**
+	 * @param mixed $value
+	 * @return int
+	 */
+	public function saveSettingsCallback($value): int
+	{
+		flush_rewrite_rules();
+		return intval($value);
+	}
 }

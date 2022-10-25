@@ -39,7 +39,7 @@ class Search extends AbstractType
             $setting_id,
             [
                 'type' => 'string',
-                'sanitize_callback' => 'sanitize_text_field',
+                'sanitize_callback' => [$this, 'saveSettingsCallback'],
                 'default' => NULL,
             ]
         );
