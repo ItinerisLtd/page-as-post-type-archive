@@ -23,11 +23,11 @@ if (! function_exists('get_page_for_post_type')) {
             $post_type = get_post_type();
         }
 
-        if ($post_type && in_array($post_type, get_post_types(), true)) {
-            return get_option("page_for_{$post_type}");
-        }
+		if (empty($post_type) || ! in_array($post_type, get_post_types(), true)) {
+			return null;
+		}
 
-        return null;
+	    return (int) get_option("page_for_{$post_type}", 0);
     }
 }
 
