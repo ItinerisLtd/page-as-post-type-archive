@@ -8,6 +8,7 @@
 /*.php          -export-ignore
 /src            -export-ignore
 /resources      -export-ignore
+/vendor         -export-ignore
 /composer.json  -export-ignore
 /composer.lock  -export-ignore
 /LICENSE        -export-ignore
