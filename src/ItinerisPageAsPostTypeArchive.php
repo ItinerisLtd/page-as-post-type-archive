@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Itineris\PageAsPostTypeArchive;
 
-class CustomPages
+class ItinerisPageAsPostTypeArchive
 {
     /**
      * @var self|null
@@ -77,3 +77,5 @@ class CustomPages
         return $types;
     }
 }
+
+ItinerisPageAsPostTypeArchive::instance();

@@ -13,6 +13,6 @@ class ItinerisPageAsPostTypeArchiveFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'itinerispageasposttypearchive';
+        return 'ItinerisPageAsPostTypeArchive';
     }
 }
