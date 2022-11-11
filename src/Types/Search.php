@@ -40,7 +40,7 @@ class Search extends AbstractType
             [
                 'type' => 'string',
                 'sanitize_callback' => [$this, 'saveSettingsCallback'],
-                'default' => NULL,
+                'default' => null,
             ]
         );
 
@@ -86,8 +86,8 @@ class Search extends AbstractType
      * Delete the setting for the corresponding post type if the page status
      * is transitioned to anything other than published
      *
-     * @param string $new_status
-     * @param string $old_status
+     * @param string  $new_status
+     * @param string  $old_status
      * @param WP_Post $post
      */
     public function transitionPostStatus(string $new_status, string $old_status, WP_Post $post): void
@@ -121,7 +121,8 @@ class Search extends AbstractType
         flush_rewrite_rules();
     }
 
-    public function bodyClass($classes): array {
+    public function bodyClass($classes): array
+    {
         if (! is_search_page()) {
             return $classes;
         }
@@ -131,7 +132,8 @@ class Search extends AbstractType
         return $classes;
     }
 
-    public function getSearchForm (string $form): string {
+    public function getSearchForm(string $form): string
+    {
         $custom_search_page_id = $this->getPageId();
         if (0 === $custom_search_page_id) {
             return $form;
@@ -152,7 +154,8 @@ class Search extends AbstractType
      *
      * @return void
      */
-    public function redirectUser (): void {
+    public function redirectUser(): void
+    {
         if (! is_search() || is_admin()) {
             return;
         }
@@ -184,7 +187,7 @@ class Search extends AbstractType
     /**
      * Exclude the site search page from the search results.
      *
-     * @param array            $query_args
+     * @param array             $query_args
      * @param \FacetWP_Renderer $class
      * @return array
      */

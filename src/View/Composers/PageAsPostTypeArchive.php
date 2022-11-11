@@ -10,6 +10,8 @@ class PageAsPostTypeArchive extends Composer
 {
     /**
      * List of views served by this composer.
+     *
+     * @var array
      */
     protected static $views = [
         'ItinerisPageAsPostTypeArchive::default',
@@ -22,9 +24,8 @@ class PageAsPostTypeArchive extends Composer
      */
     public function with(): array
     {
-        dd('post_id');
         return [
-            'post_id' => 123123,
+            'post_id' => (int) get_the_ID(),
         ];
     }
 }

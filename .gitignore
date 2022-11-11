@@ -1,5 +1,1 @@
-### Composer ###
-/vendor/
-
-### IDE ###
-/.idea/
+/vendor
