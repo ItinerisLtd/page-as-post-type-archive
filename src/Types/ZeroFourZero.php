@@ -35,7 +35,7 @@ class ZeroFourZero extends AbstractType
             [
                 'type' => 'string',
                 'sanitize_callback' => [$this, 'saveSettingsCallback'],
-                'default' => NULL,
+                'default' => null,
             ]
         );
 
@@ -72,8 +72,8 @@ class ZeroFourZero extends AbstractType
      * Delete the setting for the corresponding post type if the page status
      * is transitioned to anything other than published
      *
-     * @param string $new_status
-     * @param string $old_status
+     * @param string  $new_status
+     * @param string  $old_status
      * @param WP_Post $post
      */
     public function transitionPostStatus(string $new_status, string $old_status, WP_Post $post): void
@@ -107,7 +107,8 @@ class ZeroFourZero extends AbstractType
         flush_rewrite_rules();
     }
 
-    public function bodyClass($classes): array {
+    public function bodyClass($classes): array
+    {
         if (! is_search_page()) {
             return $classes;
         }
@@ -120,7 +121,7 @@ class ZeroFourZero extends AbstractType
     /**
      * Exclude the site 404 page from the search results.
      *
-     * @param array            $query_args
+     * @param array             $query_args
      * @param \FacetWP_Renderer $class
      * @return array
      */
@@ -142,7 +143,8 @@ class ZeroFourZero extends AbstractType
         return $query_args;
     }
 
-    public function disablePage(): void {
+    public function disablePage(): void
+    {
         if (! is_page()) {
             return;
         }

@@ -23,11 +23,11 @@ if (! function_exists('get_page_for_post_type')) {
             $post_type = get_post_type();
         }
 
-		if (empty($post_type) || ! in_array($post_type, get_post_types(), true)) {
-			return null;
-		}
+        if (empty($post_type) || ! in_array($post_type, get_post_types(), true)) {
+            return null;
+        }
 
-	    return (int) get_option("page_for_{$post_type}", 0);
+        return (int) get_option("page_for_{$post_type}", 0);
     }
 }
 
@@ -70,13 +70,13 @@ if (! function_exists('is_search_page')) {
 }
 
 if (! function_exists('get_archive_page_id')) {
-	/**
-	 * @param string $postType
-	 *
-	 * @return int
-	 */
+    /**
+     * @param string $postType
+     *
+     * @return int
+     */
     function get_archive_page_id(string $postType): int
     {
-	    return (int) get_option("page_for_{$postType}", 0);
+        return (int) get_option("page_for_{$postType}", 0);
     }
 }

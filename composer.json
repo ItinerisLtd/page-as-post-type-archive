@@ -1,15 +1,8 @@
 {
   "name": "itinerisltd/page-as-post-type-archive",
-  "type": "wordpress-plugin",
-  "description": "Allows you to set a page as the archive of a post type.",
-  "keywords": [
-    "wordpress",
-    "wp",
-    "archive",
-    "custom archive page"
-  ],
-  "homepage": "https://github.com/itinerisltd/page-as-post-type-archive/",
+  "type": "package",
   "license": "MIT",
+  "description": "Allows you to set a page as the archive of a post type.",
   "authors": [
     {
       "name": "Itineris Limited",
@@ -23,21 +16,13 @@
       "role": "Developer"
     }
   ],
-  "require": {
-    "php": "^7.4|^8.0"
-  },
-  "require-dev": {
-    "roave/security-advisories": "dev-master"
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "0.1.x-dev"
-    },
-    "acorn": {
-      "providers": "Itineris\\PageAsPostTypeArchive\\ServiceProvider"
-    }
-  },
-  "prefer-stable": true,
+  "keywords": [
+    "wordpress",
+    "sage",
+    "roots",
+    "archive",
+    "custom archive page"
+  ],
   "support": {
     "email": "dev@itineris.co.uk",
     "issues": "https://github.com/ItinerisLtd/page-as-post-type-archive/issues",
@@ -46,6 +31,28 @@
   "autoload": {
     "psr-4": {
       "Itineris\\PageAsPostTypeArchive\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^7.3|^8.0"
+  },
+  "require-dev": {
+    "itinerisltd/itineris-wp-coding-standards": "^0.4.0"
+  },
+  "extra": {
+    "acorn": {
+      "providers": [
+        "Itineris\\PageAsPostTypeArchive\\ArchiveServiceProvider"
+      ]
+    }
+  },
+  "scripts": {
+    "style:check": "phpcs",
+    "style:fix": "phpcbf"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
   }
 }

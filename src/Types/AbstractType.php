@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Itineris\PageAsPostTypeArchive\Types;
 
-abstract class AbstractType {
+abstract class AbstractType
+{
     /**
      * @var int|null
      */
@@ -23,7 +24,8 @@ abstract class AbstractType {
      * @param string $template Template to load.
      * @return string Path to the template file.
      */
-    protected function locateTemplate(string $template, array $args = []): string {
+    protected function locateTemplate(string $template, array $args = []): string
+    {
         $template_path = ITINERIS_PAPTA_SLUG;
 
         if (view()->exists("{$template_path}.{$template}")) {
@@ -38,7 +40,7 @@ abstract class AbstractType {
             return view("{$template_path}.default", $args)->toHtml();
         }
 
-        return view("ItinerisPageAsPostTypeArchive::default", $args)->toHtml();
+        return view('ItinerisPageAsPostTypeArchive::default', $args)->toHtml();
     }
 
     public static function pageSelector(array $args)
@@ -65,13 +67,13 @@ abstract class AbstractType {
         return $this->customPageId ?? 0;
     }
 
-	/**
-	 * @param mixed $value
-	 * @return int
-	 */
-	public function saveSettingsCallback($value): int
-	{
-		flush_rewrite_rules();
-		return intval($value);
-	}
+    /**
+     * @param mixed $value
+     * @return int
+     */
+    public function saveSettingsCallback($value): int
+    {
+        flush_rewrite_rules();
+        return intval($value);
+    }
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<ruleset name="Sage">
+  <!-- Check all files under project root -->
+  <file>./</file>
+  <exclude-pattern>/tests/*</exclude-pattern>
+  <exclude-pattern>/storage/*</exclude-pattern>
+  <exclude-pattern>/vendor/*</exclude-pattern>
+  <exclude-pattern>/resources/assets/*</exclude-pattern>
+
+  <!-- Show colors in console -->
+  <arg value="-colors"/>
+
+  <!-- Show progress and sniff codes in all reports; Show progress of the run -->
+  <arg value="sp"/>
+
+  <!-- Scan only PHP files -->
+  <arg name="extensions" value="php"/>
+
+  <!-- Install custom rulesets -->
+  <config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/itinerisltd/itineris-wp-coding-standards"/>
+
+  <!-- Use Itineris WP Coding Standards -->
+  <rule ref="Itineris">
+    <exclude name="PSR12.Files.FileHeader"/>
+
+    <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+    <exclude name="Squiz.Commenting.FunctionComment.MissingParamName"/>
+    <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
+
+    <exclude name="WordPress.NamingConventions.ValidVariableName"/>
+    <exclude name="WordPress.WP.EnqueuedResourceParameters.MissingVersion"/>
+  </rule>
+
+  <config name="minimum_supported_wp_version" value="7.4"/>
+
+  <rule ref="WordPress.WP.I18n">
+    <properties>
+      <property name="text_domain" type="array" value="sage,page-as-post-type-archive"/>
+    </properties>
+  </rule>
+
+  <!-- Allow render method to be called without warning -->
+  <rule ref="WordPress.Security.EscapeOutput.OutputNotEscaped">
+    <exclude-pattern>index.php</exclude-pattern>
+  </rule>
+
+  <!-- Allow php files without any PHP in them -->
+  <rule ref="Internal.NoCodeFound">
+    <exclude-pattern>resources/views</exclude-pattern>
+  </rule>
+</ruleset>

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Itineris\PageAsPostTypeArchive;
 
-class CustomPages {
+class CustomPages
+{
     /**
      * @var self|null
      */
@@ -32,7 +33,7 @@ class CustomPages {
     public static function instance(): ?self
     {
         if (null === self::$instance) {
-            self::$instance = new self;
+            self::$instance = new self();
         }
 
         return self::$instance;
@@ -64,7 +65,7 @@ class CustomPages {
 
         $types = [];
 
-        foreach($this->types as $type) {
+        foreach ($this->types as $type) {
             $class = $this->namespace . '\\Types\\' . $type;
             if (! class_exists($class)) {
                 continue;
