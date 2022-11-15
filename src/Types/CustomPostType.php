@@ -7,7 +7,6 @@ namespace Itineris\PageAsPostTypeArchive\Types;
 use WP_Customize_Manager;
 use WP_Post;
 use WP_Post_Type;
-use WP_Term;
 
 class CustomPostType extends AbstractType {
 	/**
