@@ -23,6 +23,7 @@ class CustomPostType extends AbstractType {
 	{
 		add_filter('display_post_states', [$this, 'addPageStates'], 10, 2);
 		add_filter('register_post_type_args', [$this, 'registerPostTypeArgs'], 10, 2);
+		add_filter('wpseo_breadcrumb_links', [$this, 'breadcrumbLinks']);
 		add_action('template_redirect', [$this, 'customTemplate']);
 		add_action('admin_init', [$this, 'addCustomPostTypePageSelectorOptions']);
 		add_action('customize_register', [$this, 'customizerRegister']);
@@ -281,4 +282,43 @@ class CustomPostType extends AbstractType {
 		]);
 		exit;
 	}
+
+    public function breadcrumbLinks(array $links): array
+    {
+        $postTypes = array_keys($this->getPostTypes());
+        if (empty($postTypes)) {
+            return $links;
+        }
+
+        if (! is_singular($postTypes) && ! is_post_type_archive($postTypes)) {
+            return $links;
+        }
+
+        $post_type = get_post_type();
+        $archive_page_id = (int) get_option("page_for_{$post_type}", 0);
+        if (0 === $archive_page_id) {
+            return $links;
+        }
+
+        $pages_id = [$archive_page_id];
+        $ancestors = get_post_ancestors($archive_page_id);
+        $pages_id = array_reverse(array_merge($pages_id, $ancestors));
+
+        $breadcrumbs = [];
+
+        foreach ($pages_id as $crumb) {
+            $breadcrumbs[] = [
+                'url' => get_permalink($crumb),
+                'text' => get_the_title($crumb),
+            ];
+        }
+
+        if (is_single()) {
+            array_splice($links, 1, -1, $breadcrumbs);
+        } else {
+            array_splice($links, 1, 1, $breadcrumbs);
+        }
+
+        return $links;
+    }
 }
