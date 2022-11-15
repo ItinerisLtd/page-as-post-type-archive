@@ -294,7 +294,7 @@ class CustomPostType extends AbstractType {
             return $links;
         }
 
-        $post_type = get_queried_post_type();
+        $post_type = get_post_type();
         $archive_page_id = (int) get_option("page_for_{$post_type}", 0);
         if (0 === $archive_page_id) {
             return $links;

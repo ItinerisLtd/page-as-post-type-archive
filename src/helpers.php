@@ -80,27 +80,3 @@ if (! function_exists('get_archive_page_id')) {
 	    return (int) get_option("page_for_{$postType}", 0);
     }
 }
-
-if (! function_exists('get_queried_post_type')) {
-    /**
-     * Get queried post type name.
-     *
-     * @return string
-     */
-    function get_queried_post_type(): string
-    {
-        $post_type = get_post_type();
-
-        if (false === $post_type) {
-            $queried_object = get_queried_object();
-
-            if ($queried_object instanceof WP_Term) {
-                return get_taxonomy($queried_object->taxonomy)->object_type[0];
-            }
-
-            return $queried_object->name ?? '';
-        }
-
-        return $post_type;
-    }
-}
