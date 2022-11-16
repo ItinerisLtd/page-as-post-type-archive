@@ -45,7 +45,7 @@ class CustomPostType extends AbstractType {
 				fn (WP_Post_Type $postType): bool =>
 					($postType->has_archive && ! $postType->_builtin
 					 && ! in_array($postType->name, $post_type_to_ignore, true))
-					|| 'post' !== $postType->name
+					|| 'post' === $postType->name
 			);
 		}
 
@@ -295,7 +295,13 @@ class CustomPostType extends AbstractType {
         }
 
         $post_type = get_post_type();
-        $archive_page_id = (int) get_option("page_for_{$post_type}", 0);
+
+        if ('post' === $post_type) {
+            $archive_page_id = (int) get_option('page_for_posts', 0);
+        } else {
+            $archive_page_id = (int) get_option("page_for_{$post_type}", 0);
+        }
+
         if (0 === $archive_page_id) {
             return $links;
         }
