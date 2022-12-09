@@ -57,15 +57,6 @@ class Search extends AbstractType
         );
     }
 
-    public function getPageId(): int
-    {
-        if (null === $this->customPageId) {
-            $this->customPageId = (int) get_option("page_for_{$this->fieldName}", 0);
-        }
-
-        return $this->customPageId ?? 0;
-    }
-
     public function addPageStates(array $post_states, WP_Post $post): array
     {
         if ('page' !== $post->post_type) {
