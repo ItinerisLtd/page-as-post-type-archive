@@ -62,7 +62,11 @@ abstract class AbstractType {
             $this->customPageId = (int) get_option("page_for_{$this->fieldName}", 0);
         }
 
-        return $this->customPageId ?? 0;
+        return apply_filters(
+            'itineris/page-as-post-type-archive/get_page_id',
+            ($this->customPageId ?? 0),
+            $this->fieldName
+        );
     }
 
 	/**
