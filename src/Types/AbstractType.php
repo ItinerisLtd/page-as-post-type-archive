@@ -56,16 +56,39 @@ abstract class AbstractType {
         );
     }
 
+    /**
+     * Get page ID for current model.
+     *
+     * @return int
+     */
     public function getPageId(): int
     {
         if (null === $this->customPageId) {
-            $this->customPageId = (int) get_option("page_for_{$this->fieldName}", 0);
+            $this->customPageId = $this->getPageIdByPostType($this->fieldName);
         }
+
+        return $this->customPageId ?? 0;
+    }
+
+    /**
+     * Get page ID by post type.
+     *
+     * @param string $postType
+     * @return int
+     */
+    public function getPageIdByPostType(string $postType): int
+    {
+        $option = "page_for_{$postType}";
+        if ('post' === $postType) {
+            $option = 'page_for_posts';
+        }
+
+        $pageId = (int) get_option($option, 0);
 
         return apply_filters(
             'itineris/page-as-post-type-archive/get_page_id',
-            ($this->customPageId ?? 0),
-            $this->fieldName
+            $pageId,
+            $postType
         );
     }
 
