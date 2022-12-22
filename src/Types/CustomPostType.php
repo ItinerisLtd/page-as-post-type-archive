@@ -295,6 +295,9 @@ class CustomPostType extends AbstractType {
         }
 
         $post_type = get_post_type();
+        if (false === $post_type) {
+            return $links;
+        }
 
         $archive_page_id = $this->getPageIdByPostType($post_type);
         if (0 === $archive_page_id) {
