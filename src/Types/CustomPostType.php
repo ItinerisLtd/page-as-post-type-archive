@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Itineris\PageAsPostTypeArchive\Types;
 
-use WP_Customize_Manager;
 use WP_Post;
 use WP_Post_Type;
 
@@ -26,7 +25,6 @@ class CustomPostType extends AbstractType {
 		add_filter('wpseo_breadcrumb_links', [$this, 'breadcrumbLinks']);
 		add_action('template_redirect', [$this, 'customTemplate']);
 		add_action('admin_init', [$this, 'addCustomPostTypePageSelectorOptions']);
-		add_action('customize_register', [$this, 'customizerRegister']);
 		add_action('deleted_post', [$this, 'deletedPost']);
 		add_action('transition_post_status', [$this, 'transitionPostStatus'], 10, 3);
 	}
@@ -174,48 +172,6 @@ class CustomPostType extends AbstractType {
 
 		delete_option($archive_page_data->option_name);
 		flush_rewrite_rules();
-	}
-
-	/**
-	 * Register Customizer settings.
-	 *
-	 * @param WP_Customize_Manager $wp_customize
-	 *
-	 * @return void
-	 */
-	public function customizerRegister(WP_Customize_Manager $wp_customize): void {
-		$cpts = $this->getPostTypes();
-		if (empty($cpts)) {
-			return;
-		}
-
-		$wp_customize
-			->add_section(ITINERIS_PAPTA_SLUG . '-archive', [
-				'title' => __('Pages for post type archives', 'page-as-post-type-archive'),
-			]);
-
-		foreach ($cpts as $cpt) {
-			if (! $cpt->has_archive || 'post' === $cpt->name) {
-				continue;
-			}
-
-			$id = "page_for_{$cpt->name}";
-
-			$wp_customize
-				->add_setting($id, [
-					'type' => 'option',
-					'capability' => 'manage_options',
-					'default' => 0,
-					'sanitize_callback' => [$this, 'saveSettingsCallback'],
-				]);
-
-			$wp_customize
-				->add_control($id, [
-					'type' => 'dropdown-pages',
-					'section' => ITINERIS_PAPTA_SLUG . '-archive',
-					'label' => $cpt->labels->name,
-				]);
-		}
 	}
 
 	public function registerPostTypeArgs(array $args, string $post_type): array
