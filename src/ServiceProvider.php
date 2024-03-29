@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Itineris\PageAsPostTypeArchive;
 
-use Roots\Acorn\ServiceProvider as RootsServiceProvider;
+use Illuminate\Support\ServiceProvider as ServiceProviderBase;
 use function Roots\base_path;
 
-class ServiceProvider extends RootsServiceProvider
+class ServiceProvider extends ServiceProviderBase
 {
     /**
      * Bootstrap any application services.

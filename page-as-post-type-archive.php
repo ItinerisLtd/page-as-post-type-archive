@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Plugin Name:     Page as post type archive
  * Plugin URI:      https://github.com/ItinerisLtd/page-as-post-type-archive/
  * Description:     Allows you to set a page as the archive of a post type.
- * Version:         0.1.0
+ * Version:         0.2.2
  * Author:          Itineris Limited
  * Author URI:      https://www.itineris.co.uk/
  * Text Domain:     page-as-post-type-archive
