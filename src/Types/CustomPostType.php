@@ -93,9 +93,9 @@ class CustomPostType extends AbstractType {
 		);
 	}
 
-	public function addPageStates(array $post_states, WP_Post $post): array
+	public function addPageStates(array $post_states, ?WP_Post $post): array
 	{
-		if ('page' !== $post->post_type) {
+		if (! $post instanceof WP_Post || 'page' !== $post->post_type) {
 			return $post_states;
 		}
 
