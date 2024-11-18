@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Itineris\PageAsPostTypeArchive\Types;
 
+use Itineris\PageAsPostTypeArchive\Integrations\MultilingualPress;
 use WP_Post;
 use WP_Post_Type;
 
@@ -18,6 +19,13 @@ class CustomPostType extends AbstractType {
 	 */
 	public ?array $archivePages = null;
 
+    /**
+     * @var array|\class-string[] $integrations
+     */
+    public array $integrations = [
+        MultilingualPress::class,
+    ];
+
 	public function __construct()
 	{
 		add_filter('display_post_states', [$this, 'addPageStates'], 10, 2);
@@ -27,6 +35,10 @@ class CustomPostType extends AbstractType {
 		add_action('admin_init', [$this, 'addCustomPostTypePageSelectorOptions']);
 		add_action('deleted_post', [$this, 'deletedPost']);
 		add_action('transition_post_status', [$this, 'transitionPostStatus'], 10, 3);
+
+        foreach ($this->integrations as $integration) {
+            $integration::init();
+        }
 	}
 
 	/**
