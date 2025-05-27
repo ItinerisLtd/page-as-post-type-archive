@@ -1,7 +1,7 @@
-@extends('ItinerisPageAsPostTypeArchive::layouts.app')
+@extends('layouts.app')
 
 @section('content')
     @php
-        echo apply_filters('the_content', $content)
+        echo apply_filters('the_content', $content);
     @endphp
 @endsection
