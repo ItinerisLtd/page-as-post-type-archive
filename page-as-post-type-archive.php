@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Plugin Name:     Page as post type archive
  * Plugin URI:      https://github.com/ItinerisLtd/page-as-post-type-archive/
  * Description:     Allows you to set a page as the archive of a post type.
- * Version:         0.2.3
+ * Version:         0.2.6
  * Author:          Itineris Limited
  * Author URI:      https://www.itineris.co.uk/
  * Text Domain:     page-as-post-type-archive
@@ -24,7 +24,7 @@ define('ITINERIS_PAPTA_DIR', untrailingslashit(plugin_dir_path(__FILE__)));
 
 $composer = __DIR__ . '/vendor/autoload.php';
 if (file_exists($composer)) {
-	require_once $composer;
+    include_once $composer;
 }
 
 require_once ITINERIS_PAPTA_DIR . '/src/helpers.php';
