@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Itineris\PageAsPostTypeArchive\Types;
 
 use Itineris\PageAsPostTypeArchive\Integrations\MultilingualPress;
+use WP_Admin_Bar;
 use WP_Post;
 use WP_Post_Type;
 
@@ -35,6 +36,7 @@ class CustomPostType extends AbstractType {
 		add_action('admin_init', [$this, 'addCustomPostTypePageSelectorOptions']);
 		add_action('deleted_post', [$this, 'deletedPost']);
 		add_action('transition_post_status', [$this, 'transitionPostStatus'], 10, 3);
+		add_action('admin_bar_menu', [$this, 'addEditMenu'], 80);
 
         foreach ($this->integrations as $integration) {
             $integration::init();
@@ -292,5 +294,45 @@ class CustomPostType extends AbstractType {
         }
 
         return $links;
+    }
+
+    public function addEditMenu(WP_Admin_Bar $wp_admin_bar): void
+    {
+        if (is_admin()) {
+            return;
+        }
+
+        $postTypes = array_keys($this->getPostTypes());
+        if (empty($postTypes)) {
+            return;
+        }
+
+        if (! is_post_type_archive($postTypes)) {
+            return;
+        }
+
+        $post_type = get_queried_object()->name;
+        if (false === $post_type) {
+            return;
+        }
+
+        $archive_page_id = $this->getPageIdByPostType($post_type);
+        if (0 === $archive_page_id) {
+            return;
+        }
+
+        $edit_post_link = get_edit_post_link($archive_page_id);
+        if (false === $edit_post_link) {
+            return;
+        }
+
+        $wp_admin_bar->add_node([
+            'id' => 'edit',
+            'title' => __('Edit Archive Page'),
+            'href' => $edit_post_link,
+            'meta' => [
+                'class' => 'edit-page-as-post-type-archive',
+            ],
+        ]);
     }
 }
