@@ -7,4 +7,11 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'Itineris\\PageAsPostTypeArchive\\CustomPages' => $baseDir . '/src/CustomPages.php',
+    'Itineris\\PageAsPostTypeArchive\\Integrations\\MultilingualPress' => $baseDir . '/src/Integrations/MultilingualPress.php',
+    'Itineris\\PageAsPostTypeArchive\\ServiceProvider' => $baseDir . '/src/ServiceProvider.php',
+    'Itineris\\PageAsPostTypeArchive\\Types\\AbstractType' => $baseDir . '/src/Types/AbstractType.php',
+    'Itineris\\PageAsPostTypeArchive\\Types\\CustomPostType' => $baseDir . '/src/Types/CustomPostType.php',
+    'Itineris\\PageAsPostTypeArchive\\Types\\Search' => $baseDir . '/src/Types/Search.php',
+    'Itineris\\PageAsPostTypeArchive\\Types\\ZeroFourZero' => $baseDir . '/src/Types/ZeroFourZero.php',
 );
